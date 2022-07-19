@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 AUTH0_DOMAIN = 'udacimartin.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'dev' ## Still needs to updates this
+API_AUDIENCE = 'https://coffee-shop' ## Still needs to updates this
 
 ## AuthError Exception
 '''
