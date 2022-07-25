@@ -32,6 +32,9 @@ class AuthError(Exception):
 '''
 def get_token_auth_header():
     """ Obtains the access token from the Authorization header"""
+
+    authorization_header = request.headers.get("Authorization", None)
+    
     if not authorization_header:
         raise AuthError({
             'code': 'authorization_header_missing',

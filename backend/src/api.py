@@ -50,10 +50,10 @@ def get_drinks():
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(payload):
     drinks = Drink.query.all()
-    drinks_long = [drink.long() for drink in drinks]
+
     return jsonify({
         'success': True,
-        'drinks': drinks_long
+        'drinks': [drink.long() for drink in drinks]
     }), 200
 
 
@@ -69,31 +69,22 @@ def get_drinks_detail(payload):
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
 def create_drink(payload):
-    body = request.get_json()
-    title = body.get('title', None)
-    recipe = body.get('recipe', None)
+    req = request.get_json()
 
-    if not title or not recipe:
+    try:
+        req_recipe = req['recipe']
+        if isinstance(req_recipe, dict):
+            req_recipe = [req_recipe]
+
+        drink = Drink()
+        drink.title = req['title']
+        drink.recipe = json.dumps(req_recipe) 
+        drink.insert()
+
+    except BaseException:
         abort(400)
 
-    for item in recipe:
-        color = item.get('color', None)
-        parts = item.get('parts', None)
-        name = item.get('name', None)
-        if not color or not parts or not name:
-            abort(400)
-    
-    drink = Drink.query.filter(Drink.title == title).first()
-    if drink:
-        abort(400)
-    
-    drink = Drink(title=title, recipe=json.dumps(recipe))
-    drink.insert()
-
-    return jsonify({
-        'success': True,
-        'drinks': [drink.long()]
-    }), 200
+    return jsonify({'success': True, 'drinks': [drink.long()]})
 
 
 '''
