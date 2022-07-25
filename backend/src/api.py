@@ -243,7 +243,7 @@ def unprocessable(error):
     }), 422
 
 
-app.errorhamnder(500)
+app.errorhandler(500)
 def server_error(error):
     return jsonify({
         "success": False,
